@@ -4,3 +4,4 @@
 /app/backend/build/
 /app/node_modules/
 /.idea
+/node_modules/.yarn-integrity
