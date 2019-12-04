@@ -6,15 +6,13 @@ import * as path from "path";
 dotenv.config();
 
 // Import controllers
-import itemsController from "./items/items.controller";
-import usersController from "./users/users.controller";
 
 // Create the express application
 const app = express();
 
 // Assign controllers to routes
-app.use("/api/items", itemsController);
-app.use("/api/users", usersController);
+/*app.use("/api/items", itemsController);
+app.use("/api/users", usersController);*/
 
 // Declare the path to frontend's static assets
 app.use(express.static(path.resolve("..", "frontend", "build")));
