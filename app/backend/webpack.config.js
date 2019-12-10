@@ -21,7 +21,7 @@ module.exports = {
     extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
         loader: "ts-loader",
@@ -31,4 +31,5 @@ module.exports = {
   target: "node",
   externals: nodeModules,
   plugins: [new NodemonPlugin()],
+  mode: "development",
 };
