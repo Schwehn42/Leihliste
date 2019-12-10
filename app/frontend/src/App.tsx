@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import { ItemSelectionForm } from "./components/item_selection_form/itemSelectionForm";
+import { Footer } from "./components/footer/Footer";
 
 export interface AppState {}
 
@@ -12,7 +13,11 @@ class App extends React.Component<{}, AppState> {
   public render() {
     return (
       <>
-        <ItemSelectionForm />
+        <header></header>
+        <main>
+          <ItemSelectionForm />
+        </main>
+        <Footer></Footer>
       </>
     );
   }
