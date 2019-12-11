@@ -69,7 +69,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
           Anzahl:
           <input type={"number"} min={this.state.maxAvailable > 0 ? 1 : 0} max={this.state.maxAvailable} />
         </label>
-        <button type={"submit"} onClick={_ => this.onSubmit()}>
+        <button type={"submit"} onClick={_ => this.onSubmit()} disabled={this.state.maxAvailable === 0}>
           Reservieren
         </button>
       </fieldset>
