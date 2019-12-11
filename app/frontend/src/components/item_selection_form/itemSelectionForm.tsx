@@ -8,6 +8,8 @@ import { Reservations } from "../reservations/reservations";
 type Props = {};
 type State = {
   itemsList: Array<Item>;
+  selectedItemIndex: number;
+  selectedItemAmount: number;
   error: string;
   maxAvailable: number;
 };
@@ -17,6 +19,8 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     super(props);
     this.state = {
       itemsList: [],
+      selectedItemIndex: 0,
+      selectedItemAmount: 0,
       error: "",
       maxAvailable: 0,
     };
@@ -45,11 +49,9 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         <label>
           Was:
           <select onChange={e => this.onChangeOption(e)}>
-            {" "}
             {/* update available amount */}
             <option value={0} selected={true} disabled={true}>
-              {" "}
-              ---{" "}
+              {"---"}
             </option>{" "}
             {/* default */}
             {this.state.itemsList.length === 0
@@ -67,9 +69,21 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         </label>
         <label>
           Anzahl:
-          <input type={"number"} min={this.state.maxAvailable > 0 ? 1 : 0} max={this.state.maxAvailable} />
+          <input
+            type={"number"}
+            min={this.state.maxAvailable > 0 ? 1 : 0}
+            max={this.state.maxAvailable}
+            required={true}
+            onChange={e => {
+              this.setState({ selectedItemAmount: Number.parseInt(e.currentTarget.value) });
+            }}
+          />
         </label>
-        <button type={"submit"} onClick={_ => this.onSubmit()} disabled={this.state.maxAvailable === 0}>
+        <button
+          type={"submit"}
+          onClick={_ => this.onSubmit()}
+          disabled={this.state.maxAvailable === 0 || this.state.selectedItemAmount === 0}
+        >
           Reservieren
         </button>
       </fieldset>
@@ -84,15 +98,18 @@ export class ItemSelectionForm extends React.Component<Props, State> {
 
   onChangeOption(e: FormEvent<HTMLSelectElement>): void {
     // update available amount
-    this.setState({ maxAvailable: Number.parseInt(e.currentTarget.value, 10) });
+    this.setState({
+      maxAvailable: Number.parseInt(e.currentTarget.value, 10),
+      selectedItemIndex: e.currentTarget.selectedIndex,
+    });
   }
 
   onSubmit(): void {
     axios
       .post("/reservations", {
         reservation: {
-          item: this.state.itemsList[0],
-          amount: 5,
+          item: this.state.itemsList[this.state.selectedItemIndex - 1],
+          amount: this.state.selectedItemAmount,
           from: new Date(),
           to: new Date(),
           name: "Jakob",
