@@ -1,12 +1,15 @@
 import * as React from "react";
+import { FormEvent } from "react";
 import * as dateMath from "date-arithmetic";
 import axios from "axios";
 import { Item, ItemArrayServerResponse } from "../../../../backend/model/item";
-import { FormEvent } from "react";
+import { Reservations } from "../reservations/reservations";
 
 type Props = {};
 type State = {
-  data: Array<Item>;
+  itemsList: Array<Item>;
+  selectedItemIndex: number;
+  selectedItemAmount: number;
   error: string;
   maxAvailable: number;
 };
@@ -15,16 +18,16 @@ export class ItemSelectionForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      data: [],
+      itemsList: [],
+      selectedItemIndex: 0,
+      selectedItemAmount: 0,
       error: "",
       maxAvailable: 0,
     };
   }
 
   componentDidMount(): void {
-    axios.get<ItemArrayServerResponse>(`/items`).then(res => {
-      this.setState({ data: res.data.response });
-    });
+    this.updateItemsList();
   }
 
   render() {
@@ -46,16 +49,14 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         <label>
           Was:
           <select onChange={e => this.onChangeOption(e)}>
-            {" "}
             {/* update available amount */}
             <option value={0} selected={true} disabled={true}>
-              {" "}
-              ---{" "}
+              {"---"}
             </option>{" "}
             {/* default */}
-            {this.state.data.length === 0
+            {this.state.itemsList.length === 0
               ? ""
-              : this.state.data.map((item, index) => (
+              : this.state.itemsList.map((item, index) => (
                   <option value={item.availableAmount} key={index}>
                     {item.name}
                   </option>
@@ -68,15 +69,56 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         </label>
         <label>
           Anzahl:
-          <input type={"number"} min={this.state.maxAvailable > 0 ? 1 : 0} max={this.state.maxAvailable} />
+          <input
+            type={"number"}
+            min={this.state.maxAvailable > 0 ? 1 : 0}
+            max={this.state.maxAvailable}
+            required={true}
+            onChange={e => {
+              this.setState({ selectedItemAmount: Number.parseInt(e.currentTarget.value) });
+            }}
+          />
         </label>
-        <button type={"submit"}>Reservieren</button>
+        <button
+          type={"submit"}
+          onClick={_ => this.onSubmit()}
+          disabled={this.state.maxAvailable === 0 || this.state.selectedItemAmount === 0}
+        >
+          Reservieren
+        </button>
       </fieldset>
     );
   }
 
+  updateItemsList(): void {
+    axios.get<ItemArrayServerResponse>(`/items`).then(res => {
+      this.setState({ itemsList: res.data.response });
+    });
+  }
+
   onChangeOption(e: FormEvent<HTMLSelectElement>): void {
     // update available amount
-    this.setState({ maxAvailable: Number.parseInt(e.currentTarget.value, 10) });
+    this.setState({
+      maxAvailable: Number.parseInt(e.currentTarget.value, 10),
+      selectedItemIndex: e.currentTarget.selectedIndex,
+    });
+  }
+
+  onSubmit(): void {
+    axios
+      .post("/reservations", {
+        reservation: {
+          item: this.state.itemsList[this.state.selectedItemIndex - 1],
+          amount: this.state.selectedItemAmount,
+          from: new Date(),
+          to: new Date(),
+          name: "Jakob",
+          studentCouncil: 0,
+          status: 0,
+        },
+      })
+      .then(res => {
+        Reservations.instance.updateReservationList();
+      });
   }
 }

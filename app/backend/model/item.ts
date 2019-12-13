@@ -1,3 +1,6 @@
+import { Request } from "express";
+import { Reservation } from "./reservation";
+
 export class Item {
   id: number;
   name: string;
@@ -14,4 +17,8 @@ export class Item {
 
 export interface ItemArrayServerResponse {
   response: Array<Item>;
+}
+
+export interface ReservationServerRequest extends Request {
+  reservation: Reservation;
 }
