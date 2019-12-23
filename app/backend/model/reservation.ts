@@ -8,8 +8,18 @@ export class Reservation {
   name: String;
   studentCouncil: StudentCouncil;
   status: ReservationStatus;
+  comment: string;
 
-  constructor(item: Item, amount: number, from: Date, to: Date, name: String, studentCouncil: StudentCouncil, status: ReservationStatus) {
+  constructor(
+    item: Item,
+    amount: number,
+    from: Date,
+    to: Date,
+    name: String,
+    studentCouncil: StudentCouncil,
+    status: ReservationStatus,
+    comment: string
+  ) {
     this.item = item;
     this.amount = amount;
     this.from = from;
@@ -17,6 +27,7 @@ export class Reservation {
     this.name = name;
     this.studentCouncil = studentCouncil;
     this.status = status;
+    this.comment = comment;
   }
 }
 

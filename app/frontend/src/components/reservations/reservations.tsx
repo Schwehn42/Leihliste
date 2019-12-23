@@ -33,6 +33,7 @@ export class Reservations extends React.Component<Props, State> {
           <td>Name</td>
           <td>FS</td>
           <td>Status</td>
+          <td>Kommentar</td>
         </tr>
         {this.state.reservationsList.length > 0
           ? this.state.reservationsList.map(reservation => (
@@ -44,6 +45,7 @@ export class Reservations extends React.Component<Props, State> {
                 <td>{reservation.name}</td>
                 <td>{reservation.studentCouncil}</td>
                 <td>{reservation.status}</td>
+                <td>{reservation.comment}</td>
               </tr>
             ))
           : ""}

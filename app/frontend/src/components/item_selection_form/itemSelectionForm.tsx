@@ -115,6 +115,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
           name: "Jakob",
           studentCouncil: 0,
           status: 0,
+          comment: "hello there",
         },
       })
       .then(res => {

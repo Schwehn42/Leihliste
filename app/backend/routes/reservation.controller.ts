@@ -17,7 +17,8 @@ router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) =
       req.body.reservation.to,
       req.body.reservation.name,
       req.body.reservation.studentCouncil,
-      req.body.reservation.status
+      req.body.reservation.status,
+      req.body.reservation.comment
     )
   );
 
