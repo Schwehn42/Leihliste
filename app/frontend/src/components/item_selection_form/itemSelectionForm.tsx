@@ -12,6 +12,8 @@ type State = {
   selectedItemAmount: number;
   error: string;
   maxAvailable: number;
+  reservationStart: Date | undefined;
+  reservationEnd: Date | undefined;
 };
 
 export class ItemSelectionForm extends React.Component<Props, State> {
@@ -23,6 +25,8 @@ export class ItemSelectionForm extends React.Component<Props, State> {
       selectedItemAmount: 0,
       error: "",
       maxAvailable: 0,
+      reservationStart: undefined,
+      reservationEnd: undefined,
     };
   }
 
@@ -40,11 +44,23 @@ export class ItemSelectionForm extends React.Component<Props, State> {
       <fieldset>
         <label>
           Reservieren vom:
-          <input type="date" name="reservationStart" min={todayString} max={maxPossibleDateString} />
+          <input
+            type="date"
+            name="reservationStart"
+            min={todayString}
+            max={maxPossibleDateString}
+            onChange={e => this.handleInputDateChange(e, "reservationStart")}
+          />
         </label>
         <label>
           Reservieren zum:
-          <input type="date" name="reservationStart" min={todayString} max={maxPossibleDateString} />
+          <input
+            type="date"
+            name="reservationEnd"
+            min={todayString}
+            max={maxPossibleDateString}
+            onChange={e => this.handleInputDateChange(e, "reservationEnd")}
+          />
         </label>
         <label>
           Was:
@@ -104,14 +120,23 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     });
   }
 
+  handleInputDateChange(e: FormEvent<HTMLInputElement>, targetInput: "reservationStart" | "reservationEnd"): void {
+    let date: Date = new Date(e.currentTarget.value);
+    if (targetInput === "reservationStart") {
+      this.setState({ reservationStart: date });
+    } else {
+      this.setState({ reservationEnd: date });
+    }
+  }
+
   onSubmit(): void {
     axios
       .post("/reservations", {
         reservation: {
           item: this.state.itemsList[this.state.selectedItemIndex - 1],
           amount: this.state.selectedItemAmount,
-          from: new Date(),
-          to: new Date(),
+          from: this.state.reservationStart,
+          to: this.state.reservationEnd,
           name: "Jakob",
           studentCouncil: 0,
           status: 0,
