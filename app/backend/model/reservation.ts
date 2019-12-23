@@ -6,7 +6,7 @@ export class Reservation {
   from: Date;
   to: Date;
   name: String;
-  studentCouncil: StudentCouncil;
+  studentCouncil: string;
   status: ReservationStatus;
   comment: string;
 
@@ -16,7 +16,7 @@ export class Reservation {
     from: Date,
     to: Date,
     name: String,
-    studentCouncil: StudentCouncil,
+    studentCouncil: string,
     status: ReservationStatus,
     comment: string
   ) {
@@ -35,14 +35,18 @@ export interface ReservationArrayServerResponse {
   response: Array<Reservation>;
 }
 
-export enum StudentCouncil {
-  IWI,
-  WI,
-  EIT,
-  W,
-  AB,
-  IM, //TODO add all councils
+export interface StudentCouncilsServerResponse {
+  response: Array<string>;
 }
+
+export const STUDENT_COUNCILS = [
+  "IWI",
+  "WI",
+  "EIT",
+  "W",
+  "AB",
+  "IM", //TODO add all councils
+];
 
 export enum ReservationStatus {
   RESERVED,

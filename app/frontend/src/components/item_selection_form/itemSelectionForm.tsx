@@ -4,10 +4,12 @@ import * as dateMath from "date-arithmetic";
 import axios from "axios";
 import { Item, ItemArrayServerResponse } from "../../../../backend/model/item";
 import { Reservations } from "../reservations/reservations";
+import { StudentCouncilsServerResponse } from "../../../../backend/model/reservation";
 
 type Props = {};
 type State = {
   itemsList: Array<Item>;
+  councilsList: Array<string>;
   selectedItemIndex: number;
   selectedItemAmount: number;
   error: string;
@@ -21,6 +23,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     super(props);
     this.state = {
       itemsList: [],
+      councilsList: [],
       selectedItemIndex: 0,
       selectedItemAmount: 0,
       error: "",
@@ -32,6 +35,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this.updateItemsList();
+    this.updateCouncilsList();
   }
 
   render() {
@@ -39,6 +43,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     const maxPossibleDate = dateMath.add(today, 21, "day"); //reserve up to three weeks in advance
     const todayString = today.toISOString().split("T")[0]; //iso format: yyyy-mm-ddTblahblah
     const maxPossibleDateString = maxPossibleDate.toISOString().split("T")[0];
+    const test = ["a", "b", "cccd"];
 
     return (
       <fieldset>
@@ -95,6 +100,22 @@ export class ItemSelectionForm extends React.Component<Props, State> {
             }}
           />
         </label>
+        <label>
+          Dein Name:
+          <input type={"text"} maxLength={32} required={true} placeholder={"Dein Name"} />
+        </label>
+        <label>
+          Fachschaft:
+          <select>
+            {this.state.councilsList.length === 0
+              ? ""
+              : this.state.councilsList.map((council, index) => (
+                  <option value={council} key={index}>
+                    {council}
+                  </option>
+                ))}
+          </select>
+        </label>
         <button
           type={"submit"}
           onClick={_ => this.onSubmit()}
@@ -109,6 +130,12 @@ export class ItemSelectionForm extends React.Component<Props, State> {
   updateItemsList(): void {
     axios.get<ItemArrayServerResponse>(`/items`).then(res => {
       this.setState({ itemsList: res.data.response });
+    });
+  }
+
+  updateCouncilsList(): void {
+    axios.get<StudentCouncilsServerResponse>(`/reservations/councils`).then(res => {
+      this.setState({ councilsList: res.data.response });
     });
   }
 
