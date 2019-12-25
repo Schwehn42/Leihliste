@@ -16,6 +16,9 @@ type State = {
   maxAvailable: number;
   reservationStart: Date | undefined;
   reservationEnd: Date | undefined;
+  inputName: string;
+  inputCouncil: string;
+  comment: string;
 };
 
 export class ItemSelectionForm extends React.Component<Props, State> {
@@ -30,6 +33,9 @@ export class ItemSelectionForm extends React.Component<Props, State> {
       maxAvailable: 0,
       reservationStart: undefined,
       reservationEnd: undefined,
+      inputName: "",
+      inputCouncil: "IWI",
+      comment: "",
     };
   }
 
@@ -43,7 +49,6 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     const maxPossibleDate = dateMath.add(today, 21, "day"); //reserve up to three weeks in advance
     const todayString = today.toISOString().split("T")[0]; //iso format: yyyy-mm-ddTblahblah
     const maxPossibleDateString = maxPossibleDate.toISOString().split("T")[0];
-    const test = ["a", "b", "cccd"];
 
     return (
       <fieldset>
@@ -102,11 +107,19 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         </label>
         <label>
           Dein Name:
-          <input type={"text"} maxLength={32} required={true} placeholder={"Dein Name"} />
+          <input
+            type={"text"}
+            name={"inputName"}
+            minLength={2}
+            maxLength={32}
+            required={true}
+            placeholder={"Dein Name"}
+            onChange={e => this.handleInputNameChange(e)}
+          />
         </label>
         <label>
           Fachschaft:
-          <select>
+          <select name={"inputCouncil"} onChange={e => this.handleInputCouncilChange(e)}>
             {this.state.councilsList.length === 0
               ? ""
               : this.state.councilsList.map((council, index) => (
@@ -116,13 +129,26 @@ export class ItemSelectionForm extends React.Component<Props, State> {
                 ))}
           </select>
         </label>
+        <label>
+          Kommentar:
+          <input type={"text"} maxLength={32} onChange={e => this.handleInputCommentChange(e)} />
+        </label>
         <button
           type={"submit"}
           onClick={_ => this.onSubmit()}
-          disabled={this.state.maxAvailable === 0 || this.state.selectedItemAmount === 0}
+          disabled={
+            !this.state.maxAvailable ||
+            !this.state.selectedItemAmount ||
+            !this.state.inputName ||
+            !this.state.reservationStart ||
+            !this.state.reservationEnd
+          }
         >
           Reservieren
         </button>
+        <p>
+          {this.state.inputName} - {this.state.inputCouncil}
+        </p>
       </fieldset>
     );
   }
@@ -156,6 +182,24 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     }
   }
 
+  handleInputNameChange(e: FormEvent<HTMLInputElement>): void {
+    this.setState({
+      inputName: e.currentTarget.value,
+    });
+  }
+
+  handleInputCouncilChange(e: FormEvent<HTMLSelectElement>): void {
+    this.setState({
+      inputCouncil: e.currentTarget.value,
+    });
+  }
+
+  handleInputCommentChange(e: FormEvent<HTMLInputElement>): void {
+    this.setState({
+      comment: e.currentTarget.value,
+    });
+  }
+
   onSubmit(): void {
     axios
       .post("/reservations", {
@@ -164,13 +208,13 @@ export class ItemSelectionForm extends React.Component<Props, State> {
           amount: this.state.selectedItemAmount,
           from: this.state.reservationStart,
           to: this.state.reservationEnd,
-          name: "Jakob",
-          studentCouncil: 0,
+          name: this.state.inputName,
+          studentCouncil: this.state.inputCouncil,
           status: 0,
-          comment: "hello there",
+          comment: this.state.comment,
         },
       })
-      .then(res => {
+      .then(_ => {
         Reservations.instance.updateReservationList();
       });
   }
