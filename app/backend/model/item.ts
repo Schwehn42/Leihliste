@@ -6,7 +6,7 @@ export class Item {
   maxAmount: number;
   availableAmount: number;
 
-  constructor(id: number, name: string, maxAmount: number) {
+  constructor(name: string, maxAmount: number) {
     this.name = name;
     this.maxAmount = maxAmount;
     this.availableAmount = maxAmount;
@@ -21,6 +21,7 @@ export interface ItemDef {
 
 export interface ItemArrayServerResponse {
   response: Array<Item>;
+  error: string;
 }
 
 export interface ReservationServerRequest extends Request {

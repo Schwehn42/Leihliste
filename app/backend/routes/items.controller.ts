@@ -1,16 +1,34 @@
 import * as express from "express";
 import { Item, ItemArrayServerResponse } from "../model/item";
+import ItemSchema from "../schemas/item.schema";
 
 const router = express.Router();
 
-export const items: Array<Item> = [new Item(0, "abc", 4), new Item(1, "def", 0), new Item(2, "ghi", 1)];
-
 router.route("/").get((req, res) => {
-  const response: ItemArrayServerResponse = {
-    response: items,
-  };
+  let items: Array<Item> = [];
+  let response: ItemArrayServerResponse;
 
-  return res.status(200).json(response);
+  ItemSchema.find({})
+    .then((doc: Array<Item>) => {
+      items = doc;
+      response = {
+        response: items,
+        error: "",
+      };
+    })
+    .catch(err => {
+      response = {
+        response: [],
+        error: "Error retrieving from database",
+      };
+    })
+    .finally(() => {
+      if (!response.error) {
+        return res.status(200).json(response);
+      } else {
+        return res.status(501).json(response);
+      }
+    });
 });
 
 export default router;
