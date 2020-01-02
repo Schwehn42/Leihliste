@@ -31,6 +31,17 @@ export class Reservation {
   }
 }
 
+export interface ReservationDef {
+  item_id: Number;
+  amount: number;
+  from: Date;
+  to: Date;
+  name: String;
+  studentCouncil: string;
+  status: ReservationStatus;
+  comment: string;
+}
+
 export interface ReservationArrayServerResponse {
   response: Array<Reservation>;
 }

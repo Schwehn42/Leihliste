@@ -15,6 +15,12 @@ export class Item {
   }
 }
 
+export interface ItemDef {
+  name: string;
+  maxAmount: number;
+  availableAmount: number;
+}
+
 export interface ItemArrayServerResponse {
   response: Array<Item>;
 }
