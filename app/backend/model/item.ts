@@ -1,12 +1,13 @@
 import { Request } from "express";
-import { Reservation } from "./reservation";
+import { ReservationDef } from "./reservation";
 
 export class Item {
+  _id: string;
   name: string;
   maxAmount: number;
   availableAmount: number;
 
-  constructor(name: string, maxAmount: number) {
+  constructor(_id: string, name: string, maxAmount: number) {
     this.name = name;
     this.maxAmount = maxAmount;
     this.availableAmount = maxAmount;
@@ -25,5 +26,5 @@ export interface ItemArrayServerResponse {
 }
 
 export interface ReservationServerRequest extends Request {
-  reservation: Reservation;
+  reservation: ReservationDef;
 }

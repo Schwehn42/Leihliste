@@ -9,7 +9,8 @@ router.route("/").get((req, res) => {
   let response: ItemArrayServerResponse;
 
   ItemSchema.find({})
-    .then((doc: Array<Item>) => {
+    .then(doc => {
+      //don't do explicit typing here!
       items = doc;
       response = {
         response: items,

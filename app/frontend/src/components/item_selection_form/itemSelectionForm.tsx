@@ -215,7 +215,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
     axios
       .post("/reservations", {
         reservation: {
-          item: this.state.itemsList[this.state.selectedItemIndex - 1],
+          item_id: this.state.itemsList[this.state.selectedItemIndex - 1]._id,
           amount: this.state.selectedItemAmount,
           from: this.state.reservationStart,
           to: this.state.reservationEnd,

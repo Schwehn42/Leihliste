@@ -7,7 +7,7 @@ interface ReservationDoc extends ReservationDef, Document {}
 
 export const RESERVATION_SCHEMA_DEF: SchemaDef<ReservationDef> = {
   item_id: {
-    type: Number,
+    type: String,
     required: true,
   },
   amount: {

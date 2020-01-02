@@ -1,35 +1,51 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { ReservationServerRequest } from "../model/item";
-import { Reservation, ReservationArrayServerResponse, STUDENT_COUNCILS, StudentCouncilsServerResponse } from "../model/reservation";
+import {
+  Reservation,
+  ReservationArrayServerResponse,
+  ReservationDef,
+  STUDENT_COUNCILS,
+  StudentCouncilsServerResponse,
+} from "../model/reservation";
+import ReservationSchema from "../schemas/reservation.schema";
 
 const router = express.Router();
 
-const reservations: Array<Reservation> = [];
+const reservations: Array<Reservation> = []; //empty for now
 
 router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) => {
-  console.log(req.body.reservation);
-  reservations.push(
-    new Reservation(
-      req.body.reservation.item,
-      req.body.reservation.amount,
-      req.body.reservation.from,
-      req.body.reservation.to,
-      req.body.reservation.name,
-      req.body.reservation.studentCouncil,
-      req.body.reservation.status,
-      req.body.reservation.comment
-    )
-  );
+  const newReservation: Array<ReservationDef> = [];
+  console.log("posting new reservation");
+  console.log(req.body);
+  newReservation.push({
+    item_id: req.body.reservation.item_id,
+    amount: req.body.reservation.amount,
+    from: req.body.reservation.from,
+    to: req.body.reservation.to,
+    name: req.body.reservation.name,
+    studentCouncil: req.body.reservation.studentCouncil,
+    status: req.body.reservation.status,
+    comment: req.body.reservation.comment,
+  });
 
-  console.log(reservations);
-
-  return res.status(201).send("Received Reservation");
+  ReservationSchema.insertMany(newReservation)
+    .then(_ => {})
+    .catch(err => {
+      console.log(`error: ${err}`);
+    })
+    .finally(() => {
+      return res.status(201).send("Received Reservation");
+    });
 });
 
 router.route("/").get((req, res) => {
   const response: ReservationArrayServerResponse = {
     response: reservations,
+    /*
+    TODO get proper reservation list.
+    don't forget that the items have to be fetched somehow, too
+     */
   };
   return res.status(200).json(response);
 });

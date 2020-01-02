@@ -32,7 +32,7 @@ export class Reservation {
 }
 
 export interface ReservationDef {
-  item_id: Number;
+  item_id: string;
   amount: number;
   from: Date;
   to: Date;
