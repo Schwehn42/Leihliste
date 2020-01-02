@@ -146,17 +146,28 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         >
           Reservieren
         </button>
-        <p>
-          {this.state.inputName} - {this.state.inputCouncil}
-        </p>
+        {this.state.error && (
+          <p className={"errorDisplay"}>
+            Error: <span>{this.state.error}</span>
+          </p>
+        )}
       </fieldset>
     );
   }
 
   updateItemsList(): void {
-    axios.get<ItemArrayServerResponse>(`/items`).then(res => {
-      this.setState({ itemsList: res.data.response });
-    });
+    axios
+      .get<ItemArrayServerResponse>(`/items`)
+      .then(res => {
+        this.setState({
+          itemsList: res.data.response,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          error: err.response.data.error,
+        });
+      });
   }
 
   updateCouncilsList(): void {
