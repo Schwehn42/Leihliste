@@ -19,7 +19,7 @@ router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) =
   console.log("posting new reservation");
   console.log(req.body);
   newReservation.push({
-    item_id: req.body.reservation.item_id,
+    item: req.body.reservation.item,
     amount: req.body.reservation.amount,
     from: req.body.reservation.from,
     to: req.body.reservation.to,
@@ -40,14 +40,33 @@ router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) =
 });
 
 router.route("/").get((req, res) => {
-  const response: ReservationArrayServerResponse = {
-    response: reservations,
-    /*
-    TODO get proper reservation list.
-    don't forget that the items have to be fetched somehow, too
-     */
-  };
-  return res.status(200).json(response);
+  let reservations: Array<ReservationDef> = [];
+  let response: ReservationArrayServerResponse;
+
+  ReservationSchema.find({})
+    .populate("item")
+    .then(doc => {
+      console.log(doc);
+      reservations = doc; //NOTE: ReservationDef.item is of type ObjectID, but actually contains type Item. Need to cast later
+      response = {
+        response: reservations,
+        error: "",
+      };
+    })
+    .catch(err => {
+      console.log(`error: ${err}`);
+      response = {
+        response: [],
+        error: err.message,
+      };
+    })
+    .finally(() => {
+      if (!response.error) {
+        return res.status(200).json(response);
+      } else {
+        return res.status(501).json(response);
+      }
+    });
 });
 
 router.route("/councils").get((req, res) => {

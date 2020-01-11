@@ -1,13 +1,14 @@
 import { Request } from "express";
 import { ReservationDef } from "./reservation";
+import * as mongoose from "mongoose";
 
 export class Item {
-  _id: string;
+  _id: mongoose.Schema.Types.ObjectId;
   name: string;
   maxAmount: number;
   availableAmount: number;
 
-  constructor(_id: string, name: string, maxAmount: number) {
+  constructor(name: string, maxAmount: number) {
     this.name = name;
     this.maxAmount = maxAmount;
     this.availableAmount = maxAmount;

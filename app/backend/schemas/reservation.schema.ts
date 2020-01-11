@@ -1,3 +1,4 @@
+import * as mongoose from "mongoose";
 import { Document, model, Schema } from "mongoose";
 import { SchemaDef } from "../types";
 import { ReservationDef } from "../model/reservation";
@@ -6,9 +7,10 @@ import { ReservationDef } from "../model/reservation";
 interface ReservationDoc extends ReservationDef, Document {}
 
 export const RESERVATION_SCHEMA_DEF: SchemaDef<ReservationDef> = {
-  item_id: {
-    type: String,
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "Item",
   },
   amount: {
     type: Number,
@@ -16,11 +18,13 @@ export const RESERVATION_SCHEMA_DEF: SchemaDef<ReservationDef> = {
   },
   from: {
     type: Date,
-    required: true,
+    required: false,
+    default: Date.now(),
   },
   to: {
     type: Date,
-    required: true,
+    required: false,
+    default: Date.now(),
   },
   name: {
     type: String,
@@ -43,4 +47,4 @@ export const RESERVATION_SCHEMA_DEF: SchemaDef<ReservationDef> = {
 // Define model schema
 const reservationSchema = new Schema(RESERVATION_SCHEMA_DEF);
 
-export default model<ReservationDoc>("Reservation", reservationSchema);
+export default model<ReservationDoc>("Reservation", reservationSchema, "reservations");

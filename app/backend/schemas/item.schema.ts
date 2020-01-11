@@ -23,4 +23,4 @@ export const ITEM_SCHEMA_DEF: SchemaDef<ItemDef> = {
 // Define model schema
 const itemSchema = new Schema(ITEM_SCHEMA_DEF);
 
-export default model<ItemDoc>("Item", itemSchema);
+export default model<ItemDoc>("Item", itemSchema, "items");

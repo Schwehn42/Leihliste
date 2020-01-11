@@ -1,4 +1,5 @@
 import { Item } from "./item";
+import * as mongoose from "mongoose";
 
 export class Reservation {
   item: Item;
@@ -32,7 +33,7 @@ export class Reservation {
 }
 
 export interface ReservationDef {
-  item_id: string;
+  item: mongoose.Schema.Types.ObjectId | Item;
   amount: number;
   from: Date;
   to: Date;
@@ -43,7 +44,8 @@ export interface ReservationDef {
 }
 
 export interface ReservationArrayServerResponse {
-  response: Array<Reservation>;
+  response: Array<ReservationDef>;
+  error: string;
 }
 
 export interface StudentCouncilsServerResponse {
