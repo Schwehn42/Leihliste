@@ -14,6 +14,11 @@ const router = express.Router();
 
 const reservations: Array<Reservation> = []; //empty for now
 
+/**
+ * create new reservation for an item
+ * res.body must contain field reservation of type {@link ReservationDef}.
+ * {@link ReservationDef.item} is of a mongoose ObjectID
+ */
 router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) => {
   const newReservation: Array<ReservationDef> = [];
   console.log("posting new reservation");
@@ -39,15 +44,19 @@ router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) =
     });
 });
 
+/**
+ * @return array of all reservations ({@link ReservationDef}) and error.
+ * error is "" if fetch is successful.
+ */
 router.route("/").get((req, res) => {
-  let reservations: Array<ReservationDef> = [];
+  let reservations: Array<Reservation> = [];
   let response: ReservationArrayServerResponse;
 
   ReservationSchema.find({})
     .populate("item")
     .then(doc => {
       console.log(doc);
-      reservations = doc; //NOTE: ReservationDef.item is of type ObjectID, but actually contains type Item. Need to cast later
+      reservations = doc as Array<Reservation>; //NOTE: ReservationDef.item is of type ObjectID, but actually contains type Item. Need to cast
       response = {
         response: reservations,
         error: "",

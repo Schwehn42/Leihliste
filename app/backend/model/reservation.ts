@@ -2,6 +2,7 @@ import { Item } from "./item";
 import * as mongoose from "mongoose";
 
 export class Reservation {
+  _id: mongoose.Schema.Types.ObjectId;
   item: Item;
   amount: number;
   from: Date;
@@ -44,7 +45,7 @@ export interface ReservationDef {
 }
 
 export interface ReservationArrayServerResponse {
-  response: Array<ReservationDef>;
+  response: Array<Reservation>;
   error: string;
 }
 

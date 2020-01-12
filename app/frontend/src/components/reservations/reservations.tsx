@@ -1,11 +1,11 @@
 import * as React from "react";
-import { ReservationArrayServerResponse, ReservationDef } from "../../../../backend/model/reservation";
+import { Reservation, ReservationArrayServerResponse } from "../../../../backend/model/reservation";
 import axios from "axios";
-import { Item } from "../../../../backend/model/item";
+import { ReservationStatusSelect } from "./reservation_status_select/reservationStatusSelect";
 
 type Props = {};
 type State = {
-  reservationsList: Array<ReservationDef>;
+  reservationsList: Array<Reservation>;
   error: string;
 };
 
@@ -43,7 +43,7 @@ export class Reservations extends React.Component<Props, State> {
             {this.state.reservationsList.length > 0
               ? this.state.reservationsList.map((reservation, index) => (
                   <tr key={index}>
-                    {<td>{this.castToItem(reservation.item).name}</td>}
+                    <td>{reservation.item.name}</td>
                     <td>{reservation.amount}</td>
                     <td>{new Date(reservation.from).toLocaleDateString()}</td>
                     <td>{new Date(reservation.to).toLocaleDateString()}</td>
