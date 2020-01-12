@@ -78,6 +78,24 @@ router.route("/").get((req, res) => {
     });
 });
 
+/**
+ * update (multiple) reservation status
+ * res.body must contain Array of <reservation ID and newStatus of type {@link ReservationStatus}>
+ * @return fields success: boolean and error: string
+ */
+router.route("/").put((req, res) => {
+  // TODO
+});
+
+/**
+ * delete (multiple) reservations
+ * res.body must contain Array of <reservation ID>
+ * @return fields success: boolean and error: string
+ */
+router.route("/").delete((req, res) => {
+  // TODO
+});
+
 router.route("/councils").get((req, res) => {
   const response: StudentCouncilsServerResponse = {
     response: STUDENT_COUNCILS,
