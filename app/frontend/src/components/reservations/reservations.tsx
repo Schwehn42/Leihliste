@@ -49,7 +49,9 @@ export class Reservations extends React.Component<Props, State> {
                     <td>{new Date(reservation.to).toLocaleDateString()}</td>
                     <td>{reservation.name}</td>
                     <td>{reservation.studentCouncil}</td>
-                    <td>{reservation.status}</td>
+                    <td>
+                      <ReservationStatusSelect relatedReservationID={reservation._id.toString()} initiallySelected={reservation.status} />
+                    </td>
                     <td>{reservation.comment}</td>
                   </tr>
                 ))
@@ -76,9 +78,5 @@ export class Reservations extends React.Component<Props, State> {
           error: err.response.data.error,
         });
       });
-  }
-
-  castToItem(itemObj: object): Item {
-    return itemObj as Item;
   }
 }
