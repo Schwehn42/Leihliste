@@ -1,5 +1,3 @@
-import { Request } from "express";
-import { ReservationDef } from "./reservation";
 import * as mongoose from "mongoose";
 
 export class Item {
@@ -26,6 +24,7 @@ export interface ItemArrayServerResponse {
   error: string;
 }
 
-export interface ReservationServerRequest extends Request {
-  reservation: ReservationDef;
+export interface GenericResponse {
+  success: boolean;
+  error: string;
 }

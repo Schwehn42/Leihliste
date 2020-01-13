@@ -1,7 +1,9 @@
 import { Item } from "./item";
 import * as mongoose from "mongoose";
+import { Request } from "express";
 
 export class Reservation {
+  _id: mongoose.Schema.Types.ObjectId;
   item: Item;
   amount: number;
   from: Date;
@@ -44,12 +46,25 @@ export interface ReservationDef {
 }
 
 export interface ReservationArrayServerResponse {
-  response: Array<ReservationDef>;
+  response: Array<Reservation>;
   error: string;
 }
 
 export interface StudentCouncilsServerResponse {
   response: Array<string>;
+}
+
+export interface ReservationAddServerRequest extends Request {
+  reservation: ReservationDef;
+}
+
+export interface ReservationUpdateStatusRequest extends Request {
+  id: mongoose.Schema.Types.ObjectId;
+  newStatus: ReservationStatus;
+}
+
+export interface ReservationDeleteRequest extends Request {
+  id: mongoose.Schema.Types.ObjectId;
 }
 
 export const STUDENT_COUNCILS = [
