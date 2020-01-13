@@ -2,6 +2,7 @@ import * as React from "react";
 import { Reservation, ReservationArrayServerResponse } from "../../../../backend/model/reservation";
 import axios from "axios";
 import { ReservationStatusSelect } from "./reservation_status_select/reservationStatusSelect";
+import { ReservationDelete } from "./reservation_delete/reservationDelete";
 
 type Props = {};
 type State = {
@@ -39,6 +40,7 @@ export class Reservations extends React.Component<Props, State> {
               <td>FS</td>
               <td>Status</td>
               <td>Kommentar</td>
+              <td>Löschen</td>
             </tr>
             {this.state.reservationsList.length > 0
               ? this.state.reservationsList.map((reservation, index) => (
@@ -50,9 +52,12 @@ export class Reservations extends React.Component<Props, State> {
                     <td>{reservation.name}</td>
                     <td>{reservation.studentCouncil}</td>
                     <td>
-                      <ReservationStatusSelect relatedReservationID={reservation._id.toString()} initiallySelected={reservation.status} />
+                      <ReservationStatusSelect relatedReservationID={reservation._id.toString()} selectedStatus={reservation.status} />
                     </td>
                     <td>{reservation.comment}</td>
+                    <td>
+                      <ReservationDelete relatedReservationID={reservation._id.toString()} />
+                    </td>
                   </tr>
                 ))
               : ""}
