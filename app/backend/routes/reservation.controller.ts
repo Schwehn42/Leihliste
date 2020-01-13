@@ -1,10 +1,13 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { ReservationServerRequest } from "../model/item";
+import { GenericResponse } from "../model/item";
 import {
   Reservation,
+  ReservationAddServerRequest,
   ReservationArrayServerResponse,
   ReservationDef,
+  ReservationDeleteRequest,
+  ReservationUpdateStatusRequest,
   STUDENT_COUNCILS,
   StudentCouncilsServerResponse,
 } from "../model/reservation";
@@ -19,7 +22,7 @@ const reservations: Array<Reservation> = []; //empty for now
  * res.body must contain field reservation of type {@link ReservationDef}.
  * {@link ReservationDef.item} is of a mongoose ObjectID
  */
-router.route("/").post(bodyParser.json(), (req: ReservationServerRequest, res) => {
+router.route("/").post(bodyParser.json(), (req: ReservationAddServerRequest, res) => {
   const newReservation: Array<ReservationDef> = [];
   console.log("posting new reservation");
   console.log(req.body);
@@ -83,8 +86,25 @@ router.route("/").get((req, res) => {
  * res.body must contain Array of <reservation ID and newStatus of type {@link ReservationStatus}>
  * @return fields success: boolean and error: string
  */
-router.route("/").put((req, res) => {
-  // TODO
+router.route("/").put(bodyParser.json(), (req: ReservationUpdateStatusRequest, res) => {
+  let response: GenericResponse = {
+    success: true,
+    error: "",
+  };
+
+  ReservationSchema.updateOne({ _id: req.body.id }, { status: req.body.newStatus })
+    .then(_ => {})
+    .catch(_ => {
+      response.success = false;
+      response.error = "error while updating reservation";
+    })
+    .finally(() => {
+      if (!response.error) {
+        return res.status(200).json(response);
+      } else {
+        return res.status(501).json(response);
+      }
+    });
 });
 
 /**
@@ -92,15 +112,31 @@ router.route("/").put((req, res) => {
  * res.body must contain Array of <reservation ID>
  * @return fields success: boolean and error: string
  */
-router.route("/").delete((req, res) => {
-  // TODO
+router.route("/delete").post(bodyParser.json(), (req: ReservationDeleteRequest, res) => {
+  let response: GenericResponse = {
+    success: true,
+    error: "",
+  };
+
+  ReservationSchema.findOneAndDelete({ _id: req.body.id })
+    .then(_ => {})
+    .catch(_ => {
+      response.success = false;
+      response.error = "error while deleting reservation";
+    })
+    .finally(() => {
+      if (!response.error) {
+        return res.status(200).json(response);
+      } else {
+        return res.status(501).json(response);
+      }
+    });
 });
 
 router.route("/councils").get((req, res) => {
   const response: StudentCouncilsServerResponse = {
     response: STUDENT_COUNCILS,
   };
-  console.log(response);
 
   return res.status(200).json(response);
 });
