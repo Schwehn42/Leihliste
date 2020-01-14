@@ -22,6 +22,7 @@ type State = {
 };
 
 export class ItemSelectionForm extends React.Component<Props, State> {
+  static instance;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,6 +38,7 @@ export class ItemSelectionForm extends React.Component<Props, State> {
       inputCouncil: "IWI",
       comment: "",
     };
+    Reservations.instance = this;
   }
 
   componentDidMount(): void {
@@ -226,7 +228,18 @@ export class ItemSelectionForm extends React.Component<Props, State> {
         },
       })
       .then(_ => {
+        this.subtractLocalItemAvailableAmount();
         Reservations.instance.updateReservationList();
       });
+  }
+
+  subtractLocalItemAvailableAmount(): void {
+    //update local item list
+    let mutateItemList = this.state.itemsList;
+    mutateItemList[this.state.selectedItemIndex - 1].availableAmount -= this.state.selectedItemAmount;
+    this.setState({
+      itemsList: mutateItemList,
+      maxAvailable: mutateItemList[this.state.selectedItemIndex - 1].availableAmount,
+    });
   }
 }

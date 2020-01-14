@@ -56,7 +56,11 @@ export class Reservations extends React.Component<Props, State> {
                     </td>
                     <td>{reservation.comment}</td>
                     <td>
-                      <ReservationDelete relatedReservationID={reservation._id.toString()} />
+                      <ReservationDelete
+                        relatedReservationID={reservation._id.toString()}
+                        relatedItemID={reservation.item._id.toString()}
+                        amountToReAdd={reservation.amount}
+                      />
                     </td>
                   </tr>
                 ))

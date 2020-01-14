@@ -12,6 +12,7 @@ import {
   StudentCouncilsServerResponse,
 } from "../model/reservation";
 import ReservationSchema from "../schemas/reservation.schema";
+import ItemSchema from "../schemas/item.schema";
 
 const router = express.Router();
 
@@ -37,7 +38,13 @@ router.route("/").post(bodyParser.json(), (req: ReservationAddServerRequest, res
     comment: req.body.reservation.comment,
   });
 
+  console.log(req.body.reservation.item);
+  // insert new reservation
   ReservationSchema.insertMany(newReservation)
+    .then(_ => {
+      // subtract available amount from item
+      return ItemSchema.updateOne({ _id: req.body.reservation.item }, { $inc: { availableAmount: -req.body.reservation.amount } });
+    })
     .then(_ => {})
     .catch(err => {
       console.log(`error: ${err}`);
@@ -118,7 +125,10 @@ router.route("/delete").post(bodyParser.json(), (req: ReservationDeleteRequest, 
     error: "",
   };
 
-  ReservationSchema.findOneAndDelete({ _id: req.body.id })
+  ReservationSchema.findOneAndDelete({ _id: req.body.reservationID })
+    .then(_ => {
+      return ItemSchema.updateOne({ _id: req.body.itemID }, { $inc: { availableAmount: req.body.amountToReAdd } });
+    })
     .then(_ => {})
     .catch(_ => {
       response.success = false;

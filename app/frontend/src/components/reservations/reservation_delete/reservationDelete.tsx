@@ -4,6 +4,8 @@ import { Reservations } from "../reservations";
 
 type Props = {
   relatedReservationID: string;
+  relatedItemID: string;
+  amountToReAdd: number;
 };
 type State = {};
 
@@ -15,7 +17,9 @@ export class ReservationDelete extends React.Component<Props, State> {
   deleteReservation(): void {
     axios
       .post("/reservations/delete", {
-        id: this.props.relatedReservationID,
+        reservationID: this.props.relatedReservationID,
+        itemID: this.props.relatedItemID,
+        amountToReAdd: this.props.amountToReAdd,
       })
       .then(_ => {
         Reservations.instance.updateReservationList();
